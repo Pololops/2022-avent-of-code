@@ -1,0 +1,16 @@
+{
+	"name": "avents",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "tsnd --cls --respawn ./ --notify=false"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^18.11.13",
+		"ts-node": "^10.9.1",
+		"ts-node-dev": "^2.0.0"
+	}
+}
