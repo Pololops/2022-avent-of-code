@@ -12,7 +12,9 @@ const data = fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8')
 
 
 
-const turns: [string, string][] = data.split('\n').filter((turn) => turn && turn).map((turn) => [turn[0], turn[2]])
+const turns: [string, string][] = data
+  .split('\n').filter((turn) => turn && turn)
+  .map((turn) => [turn[0], turn[2]])
 
 function playTurnWithStrategy(turn: [string, string]): number {
   //? Strategy :
@@ -105,6 +107,6 @@ function playGame(turns: [string, string][], callback: (arg: [string, string]) =
 
 export default `
   DAY 2 :
-    The total score by following the strategy : ${playGame(turns, playTurnWithStrategy)}
-    The total score by following the goal : ${playGame(turns, playTurnWithGoal)}
+    The total score by following the strategy: ${playGame(turns, playTurnWithStrategy)}
+    The total score by following the goal: ${playGame(turns, playTurnWithGoal)}
 `

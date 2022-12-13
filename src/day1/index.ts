@@ -19,6 +19,6 @@ const topThreeCalories = totalCaloriesForEachElves.filter((elveCalories, index) 
 
 export default `
   DAY 1 :
-    The first Elve Calories : ${biggestElveCalories}
-    The three firsts Elves Calories : ${topThreeCalories}
+    The first Elve Calories: ${biggestElveCalories}
+    The three firsts Elves Calories: ${topThreeCalories}
 `
