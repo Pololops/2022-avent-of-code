@@ -1,8 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-const data = fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8')
-
 const fakeData: string = `vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
 PmmdzqPrVvPwwTWBwg
@@ -10,62 +8,111 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw`
 
-const rucksacks = fakeData
-  .split('\n')
-  .filter((rucksack) => rucksack && rucksack)
+const app = {
+  data: fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8'),
 
-const rucksacksCompartments = rucksacks
-  .map((rucksack) => {
-    const firstCompartmentItems = rucksack
-      .substring(0, rucksack.length / 2)
+  formatData (data: string) {
+    return data.split('\n').filter((element) => element && element)
+  },
+
+  sliptEachElements (data: string[]): string[][][] {
+    return data.map((element) => {
+      const firstCompartmentItems = element
+      .substring(0, element.length / 2)
       .split('')
 
-    const secondCompartmentItems = rucksack
-      .substring(rucksack.length / 2 , rucksack.length)
-      .split('')
+      const secondCompartmentItems = element
+        .substring(element.length / 2 , element.length)
+        .split('')
 
-    return [firstCompartmentItems, secondCompartmentItems]
-  })
+      return [firstCompartmentItems, secondCompartmentItems]
+    })
+  },
 
-const rucksacksDuplicateItems = rucksacksCompartments.map((rucksacksCompartment) => {
-  return rucksacksCompartment[0].filter((itemC1) => {
-    return rucksacksCompartment[1].find((itemC2) => (itemC1 === itemC2) && itemC1)
-  })[0]
-})
+  getDuplicateElements (data: string[][][]): string[][] {
+    return data.map((element) => {
+      
+      let duplicateLetter: string[] = []
+      let result: string[] = []
+      element.forEach((item, index) => {
+        if (index > 0) {
+          if (duplicateLetter.length > 0) {
+            const filterLetters = item.filter((item1) => {
+              return duplicateLetter
+                .find((item2) => (item1 === item2) && item1)
+            })
 
-const priorityItemType = (letter: string): number => {
-  if (/[a-z]/.test(letter)) return letter.charCodeAt(0) - 96
-  if (/[A-Z]/.test(letter)) return (letter.charCodeAt(0) - 64) + 26
+            duplicateLetter = [...filterLetters]
+          } else {
+            const filterLetters = item.filter((item1) => {
+              return element[index - 1]
+                .find((item2) => (item1 === item2) && item1)
+            })
 
-  return 0
+            duplicateLetter = [...filterLetters]
+          }
+        }
+
+        if (duplicateLetter) result = [duplicateLetter[0]]
+      })
+      
+      return result
+    })
+  },
+
+  getPriorityElement (element: string): number {
+    if (/[a-z]/.test(element)) return element.charCodeAt(0) - 96
+    if (/[A-Z]/.test(element)) return (element.charCodeAt(0) - 64) + 26
+
+    return 0
+  },
+
+  getSumOfPriorityElement (data: string[][]): number {
+    return data
+      .flat()
+      .map((element) => app.getPriorityElement(element))
+      .reduce((a, b) => a + b)
+  },
+
+  regroupDataByThree(data: string[]): string[][][] {
+    const regroupStrings: string[][][] = []
+
+    let subIndex = 0
+    data.forEach((element, index) => {
+      if (index === 0 || index % 3 === 0) {
+        regroupStrings.push([element.split('')])
+        
+        if(data[index + 1]) regroupStrings[subIndex].push(data[index + 1].split(''))
+        if(data[index + 2]) regroupStrings[subIndex].push(data[index + 2].split(''))
+        
+        subIndex += 1
+      }
+    })
+    
+    return regroupStrings;
+  }
 }
 
-const sumOfDuplicateItemTypes = rucksacksDuplicateItems
-  .map((item) => priorityItemType(item))
-  .reduce((a, b) => a + b)
+const getResultOfPart1 = (data: string): number => {
+  const rubsacks = app.formatData(data)
+  const rubsacksCompartments = app.sliptEachElements(rubsacks)
+  const foundDuplicateLetter = app.getDuplicateElements(rubsacksCompartments)
 
-//! Day 3 - Part 2
-function compareTwoStrings (array: string[], startIndex = 0): string {
-  const filteredLetter = array[startIndex].split('').filter((letterStr1) => {
-    return array[startIndex + 1].split('').find((letterStr2) => (letterStr1 === letterStr2) && letterStr1)
-  })
+  return app.getSumOfPriorityElement(foundDuplicateLetter)
+}
   
-  return filteredLetter.toString()
-}
+const getResultOfPart2 = (data: string): number => {
+  const rubsacks = app.formatData(data)
+  const groupsOfElves = app.regroupDataByThree(rubsacks)
+  const badgesOfElfGroupes = app.getDuplicateElements(groupsOfElves)
 
-function compareSeveralStrings (array: string[]) {
-  let similarLetter: string = ''
-  array.forEach((_element, index) => {
-    if (!similarLetter && similarLetter !== '') {
-      similarLetter = compareTwoStrings(array, index)
-    } else if (index < array.length - 1) {
-      similarLetter = compareTwoStrings([similarLetter, ...array], index)
-    }
-  })
-  return similarLetter
+  console.log(badgesOfElfGroupes)
+
+  return app.getSumOfPriorityElement(badgesOfElfGroupes)
 }
 
 export default `
   DAY 3 :
-    The sum of the priorities of the duplicate items in the rucksacks: ${sumOfDuplicateItemTypes}
+    The sum of the priorities of the duplicate items in each rucksacks: ${getResultOfPart1(app.data)}
+    The sum of the badges of each three-Elf group: ${getResultOfPart2(app.data)}
 `
