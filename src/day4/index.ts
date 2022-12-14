@@ -1,8 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-const part1Result = 0
-
 const app = {
   data: fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8'),
 
