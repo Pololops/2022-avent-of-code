@@ -1,13 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-const fakeData: string = `vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw`
-
 const app = {
   data: fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8'),
 

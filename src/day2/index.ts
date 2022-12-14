@@ -8,10 +8,6 @@ const data = fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8')
 // B or Y : Paper     (2 point)
 // C or Z : Scissors  (3 point)
 
-
-
-
-
 const turns: [string, string][] = data
   .split('\n').filter((turn) => turn && turn)
   .map((turn) => [turn[0], turn[2]])
