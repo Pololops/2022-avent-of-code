@@ -106,8 +106,6 @@ const getResultOfPart2 = (data: string): number => {
   const groupsOfElves = app.regroupDataByThree(rubsacks)
   const badgesOfElfGroupes = app.getDuplicateElements(groupsOfElves)
 
-  console.log(badgesOfElfGroupes)
-
   return app.getSumOfPriorityElement(badgesOfElfGroupes)
 }
 
