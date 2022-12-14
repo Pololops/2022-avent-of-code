@@ -35,7 +35,7 @@ const getResultOfPart2 = (data: string): number => {
 }
 
 export default `
-  DAY X :
+  DAY 5 :
     Part 1: ${getResultOfPart1(fakeData)}
     Part 2: ${getResultOfPart2(fakeData)}
 `
