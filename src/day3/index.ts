@@ -8,7 +8,7 @@ const app = {
     return data.split('\n').filter((element) => element && element)
   },
 
-  sliptEachElements (data: string[]): string[][][] {
+  splitEachElements (data: string[]): string[][][] {
     return data.map((element) => {
       const firstCompartmentItems = element
       .substring(0, element.length / 2)
@@ -88,7 +88,7 @@ const app = {
 
 const getResultOfPart1 = (data: string): number => {
   const rubsacks = app.formatData(data)
-  const rubsacksCompartments = app.sliptEachElements(rubsacks)
+  const rubsacksCompartments = app.splitEachElements(rubsacks)
   const foundDuplicateLetter = app.getDuplicateElements(rubsacksCompartments)
 
   return app.getSumOfPriorityElement(foundDuplicateLetter)
