@@ -64,7 +64,7 @@ const app ={
     )
   },
 
-  launchProcedure (): string[][] {
+  launchProcedure (hasToBeReversed: boolean): string[][] {
     const newStacks: string[][] = [...app.stacks];
 
     app.procedure.forEach((instruction) => {
@@ -73,7 +73,12 @@ const app ={
       const toIndex = instruction[2] - 1
 
       const cratesMoving = newStacks[fromIndex].splice(0, cratesNumberToMove)
-      newStacks[toIndex].unshift(...cratesMoving.reverse())
+
+      if (hasToBeReversed) {
+        cratesMoving.reverse()
+      }
+
+      newStacks[toIndex].unshift(...cratesMoving)
     })
 
     return newStacks
@@ -86,23 +91,24 @@ const app ={
   }
 }
 
-
-
 const getResultOfPart1 = (data: string): string => {
-  app.formatData(data)
-  const newStacks = app.launchProcedure()
+  app.formatData(app.data)
+  const newStacks = app.launchProcedure(true)
   const result = app.getTopCrates(newStacks)
 
   return result
 }
 
-const getResultOfPart2 = (data: string): number => {
+const getResultOfPart2 = (data: string): string => {
+  app.formatData(app.data)
+  const newStacks = app.launchProcedure(false)
+  const result = app.getTopCrates(newStacks)
 
-  return 0;
+  return result
 }
 
 export default `
   DAY 5 :
-    Crate ends up on top of each stack: ${getResultOfPart1(app.data)}
-    Part 2: ${getResultOfPart2(fakeData)}
+    Crates on top of each stack when they are moved one by one: ${getResultOfPart1(app.data)}
+    Crates on top of each stack when they are moved together: ${getResultOfPart2(app.data)}
 `
