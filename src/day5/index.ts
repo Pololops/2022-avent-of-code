@@ -8,15 +8,17 @@ const fakeData = `    [D]
 
 move 1 from 2 to 1
 move 3 from 1 to 3
-move 2 from 2 to 1
-move 1 from 1 to 2`
+move 23 from 2 to 1
+move 1 from 1 to 2
+`
 
 const app ={
   data: fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8'),
 
-  stacks: [] as string[],
   procedure: [] as any[][],
   stacksQuantity: 0,
+
+  stacks: [] as string[][],
 
   formatData (data: string): void {
     const [cratesAndStacks, procedure] = data.split('\n\n')
@@ -29,48 +31,69 @@ const app ={
 
     app.procedure = procedure
       .split('\n')
-      .map((line) => line
-        .split('')
-        .filter((char) => /^[1-9]$/.test(char) && char)
+      .filter((line) => line && line)
+      .map((line) => line.replace('move', '').replace('from', '').replace('to', '')
+        .split(' ')
+        .filter((char) => /^[0-9]+$/.test(char) && char)
         .map((char) => parseInt(char))
       )
 
+    let crateDispatchIndex = 0
     const crates = cratesAndStacks
       .split('\n')
       .slice(0, -1)
-      .map((series) => series.split(' '))
-      // .filter((element, index) => {
-      //   if (element !== ' ') return element
-      // })
-    console.log(crates)
-    const stacks:string[] = []
-    crates.forEach((series, index) => {
-      if (index === 0 || index % 4 === 0) {
-        
-      }
-    })
+      .map((series) => series
+        .split('')
+        .filter((element, index) => {
+          if (index - 1 === 0 || (index - 1) % 4 === 0) {
+            return element
+          }
+        })
+      )
 
-    // const arrayOfStacks = stacks.split('').filter((character) => {
-    //   if (character !== '[' && character !== ']' && character !== '\n') {
-    //     return character
-    //   }
-    // })
+    crates.map((x, index)=> x.forEach((element) => {
+        if (index === 0) {
+          app.stacks[crateDispatchIndex] = (element !== ' ') ? [element] : []
+        } else {
+          if (element !== ' ') app.stacks[crateDispatchIndex].push(element)
+        }
 
-
-
-
-    console.log('NB OF STACKS: ', app.stacksQuantity)
-    console.log('PROCEDURE: ', app.procedure)
-    console.log('CRATES: ', app.stacks)
+        crateDispatchIndex += 1
+        if (crateDispatchIndex > app.stacksQuantity - 1) crateDispatchIndex = 0
+      })
+    )
   },
 
+  launchProcedure (): string[][] {
+    const newStacks: string[][] = [...app.stacks];
 
+    app.procedure.forEach((instruction) => {
+      const cratesNumberToMove = instruction[0]
+      const fromIndex = instruction[1] - 1
+      const toIndex = instruction[2] - 1
+
+      const cratesMoving = newStacks[fromIndex].splice(0, cratesNumberToMove)
+      newStacks[toIndex].unshift(...cratesMoving.reverse())
+    })
+
+    return newStacks
+  },
+
+  getTopCrates (data: string[][]) {
+    const result = data.map((stack) => stack[0]).join('')
+
+    return result
+  }
 }
 
-const getResultOfPart1 = (data: string): string => {
-  app.formatData(fakeData)
 
-  return 'TEST';
+
+const getResultOfPart1 = (data: string): string => {
+  app.formatData(data)
+  const newStacks = app.launchProcedure()
+  const result = app.getTopCrates(newStacks)
+
+  return result
 }
 
 const getResultOfPart2 = (data: string): number => {
@@ -80,6 +103,6 @@ const getResultOfPart2 = (data: string): number => {
 
 export default `
   DAY 5 :
-    Crate ends up on top of each stack: ${getResultOfPart1(fakeData)}
+    Crate ends up on top of each stack: ${getResultOfPart1(app.data)}
     Part 2: ${getResultOfPart2(fakeData)}
 `

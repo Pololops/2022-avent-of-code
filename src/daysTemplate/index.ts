@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 const fakeData = ``
 
-const app ={
+const app = {
   data: fs.readFileSync(path.join(__dirname, './data.txt'), 'utf-8'),
 
   formatData (data: string): string[] {
