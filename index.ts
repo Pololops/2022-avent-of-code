@@ -6,6 +6,7 @@ import day3 from './src/day3'
 import day4 from './src/day4'
 import day5 from './src/day5'
 import day6 from './src/day6'
+import day7 from './src/day7'
 
 console.log(day1)
 console.log(day2)
@@ -13,3 +14,4 @@ console.log(day3)
 console.log(day4)
 console.log(day5)
 console.log(day6)
+console.log(day7)
